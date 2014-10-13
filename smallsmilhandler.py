@@ -15,7 +15,7 @@ class smallSMILHandler(ContentHandler):
             'root-layout': ['width', 'height', 'background-color'],
             'region': ['id', 'top', 'bottom', 'left', 'right'],
             'img': ['src', 'region', 'begin', 'dur'],
-            'audio': ['source', 'begin', 'dur'],
+            'audio': ['src', 'begin', 'dur'],
             'textstream': ['src', 'region']
         }
 
@@ -30,7 +30,7 @@ class smallSMILHandler(ContentHandler):
             Dic = {}
             Dic['etiqueta'] = name
             for atributo in self.Karaoke[name]:
-                Dic[atributo] = attrs.get(atributo, "Nada")
+                Dic[atributo] = attrs.get(atributo, "")
             self.lista.append(Dic)
 
     def get_tags(self):

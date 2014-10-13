@@ -8,28 +8,46 @@ import sys
 import os
 
 
-def Impresion_Ordenada(lista):
-    for Diccionario in lista:
-        print Diccionario['etiqueta'], ('\t'),
-        for Clave in Diccionario:
-            if Clave != 'etiqueta' and Diccionario[Clave] != "":
-                if Clave == 'src':
-                    os.system("wget -q " + Diccionario[Clave])
-                    Diccionario[Clave] = Diccionario[Clave].split('/')[-1]
-                print Clave, "= " + '"' + Diccionario[Clave] + '"' + ('\t'),
-        print
+class karaokeLocal():
+
+    def __init__(self, fichero):
+        parser = make_parser()
+        cHandler = smallSMILHandler()
+        parser.setContentHandler(cHandler)
+        parser.parse(open(fichero))
+        self.lista = cHandler.get_tags()
+
+    def __str__(self):
+        cadena = ""
+        for Dic in self.lista:
+            cadena += str('\n' + Dic['etiqueta'] + '\t')
+            for Clave in Dic:
+                if Clave != 'etiqueta' and Dic[Clave] != "":
+                    cadena += str(Clave + "= " + '"' + Dic[Clave] + '"' + '\t')
+        return cadena
+
+    def do_local(self):
+        cadena = ""
+        for Dic in self.lista:
+            cadena += str('\t' + Dic['etiqueta'] + '\t')
+            for Clave in Dic:
+                if Clave != 'etiqueta' and Dic[Clave] != "":
+                    if Clave == 'src':
+                        os.system("wget -q " + Dic[Clave])
+                        Dic[Clave] = Dic[Clave].split('/')[-1]
+                    cadena += str(Clave + "= " + '"' + Dic[Clave] + '"' + '\t')
+        return cadena
 
 
 if __name__ == "__main__":
     """
     Programa principal
     """
-    parser = make_parser()
-    cHandler = smallSMILHandler()
-    parser.setContentHandler(cHandler)
     try:
-        parser.parse(open(sys.argv[1]))
+        fichero = sys.argv[1]
     except IndexError:
         sys.exit("Usage: python karaoke.py file.smil.")
-    lista = cHandler.get_tags()
-    Impresion_Ordenada(lista)
+    Cadena = karaokeLocal(fichero)
+    print Cadena
+    Cadena.do_local()
+    print Cadena
